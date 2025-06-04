@@ -1,0 +1,42 @@
+pipeline:
+  name: iels-case-manager-pipeline
+  identifier: ielscasemanagerpipeline
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: account.cwngithubconnector
+        repoName: els-station-manager
+        build: <+input>
+  stages:
+    - stage:
+        name: build
+        identifier: build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          caching:
+            enabled: true
+            override: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: ielsgkeprojectconnector
+              namespace: dev
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    connectorRef: codewithnayakdocker
+                    image: bash
+                    shell: Bash
+                    command: echo `'hi`
